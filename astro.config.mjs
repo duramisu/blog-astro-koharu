@@ -169,7 +169,7 @@ if (contentConfig.enableCodeMeta !== false) shikiTransformers.push(shokaMetaTran
 // https://astro.build/config
 export default defineConfig({
   site: yamlConfig.site.url,
-  base: yamlConfig.site.base,
+  // base: yamlConfig.site.base,
   compressHTML: true,
   markdown: {
     // Enable GitHub Flavored Markdown
