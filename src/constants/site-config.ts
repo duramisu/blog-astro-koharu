@@ -175,8 +175,8 @@ type SocialConfig = {
   rss?: SocialPlatform;
 };
 
-// Get base path from config
-const basePath = yamlConfig.site.base || '/';
+// Get base path from config (ensure trailing slash)
+const basePath = (yamlConfig.site.base || '/').replace(/\/?$/, '/');
 
 // Helper function to prepend base path to relative paths
 function withBase(path: string | undefined): string | undefined {
