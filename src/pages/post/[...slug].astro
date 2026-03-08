@@ -28,6 +28,9 @@ import EditButton from '@/components/EditButton';
 import { defaultLocale, getLocaleFromUrl, getLocaleLabel, localizedPath, t } from '@/i18n';
 import { extractTextFromMarkdown } from '@/lib/sanitize';
 
+// Get Astro base path for static assets
+const base = import.meta.env.BASE_URL;
+
 export async function getStaticPaths() {
   const postCollections = await getSortedPosts(defaultLocale);
 
@@ -149,7 +152,7 @@ if (post.data.description) {
 >
   <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
-  {hasMath && <link slot="head" rel="stylesheet" href="/katex/katex.min.css" />}
+  {hasMath && <link slot="head" rel="stylesheet" href={`${base}katex/katex.min.css`} />}
   <TwoColumnLayout post={post}>
     <Cover slot="cover" data={post} />
     <HomeSider slot="sider" type={HomeSiderType.POST} post={post} />

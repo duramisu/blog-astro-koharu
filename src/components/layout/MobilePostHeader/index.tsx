@@ -11,6 +11,7 @@ import { useCurrentHeading } from '@hooks/useCurrentHeading';
 import { useTranslation } from '@hooks/useTranslation';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { siteConfig } from '@/constants/site-config';
+import { localizedPath } from '@/i18n';
 import { HeadingTitle } from './HeadingTitle';
 import { MobileTOCDropdown } from './MobileTOCDropdown';
 import { ProgressCircle } from './ProgressCircle';
@@ -68,7 +69,7 @@ export function MobilePostHeader({
 
   // Logo component
   const Logo = () => (
-    <a href="/" className="flex items-center gap-1">
+    <a href={localizedPath('/')} className="flex items-center gap-1">
       {logoElement === 'svg' && logoSrc ? (
         <img src={logoSrc} alt={siteConfig?.alternate ?? siteConfig?.name} className="h-8" height={32} />
       ) : (

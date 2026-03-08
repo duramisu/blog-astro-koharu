@@ -42,6 +42,9 @@ import {
 
 import '@styles/index.css';
 
+// Get Astro base path for static assets
+const base = import.meta.env.BASE_URL;
+
 const {
   title = seoConfig.title,
   description = seoConfig.description,
@@ -76,8 +79,9 @@ const canonicalHref = canonicalOverride ?? Astro.url.href;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.ico`} />
     <meta name="generator" content={Astro.generator} />
+    <style is:global>{`:root{--base-url:"${base}"}`}</style>
     
     <!-- Preconnect to third-party origins for faster resource loading -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -88,13 +92,13 @@ const canonicalHref = canonicalOverride ?? Astro.url.href;
     {/* Async load rounded fonts — Japanese pages use Gen Jyuu Gothic P, others use ChillRoundF (fix #113) */}
     {locale === 'ja' ? (
       <>
-        <link rel="stylesheet" href="/fonts/GenJyuuGothic-P-Regular/result.css" media="print" onload="this.setAttribute('media','all')" />
-        <link rel="stylesheet" href="/fonts/GenJyuuGothic-P-Bold/result.css" media="print" onload="this.setAttribute('media','all')" />
+        <link rel="stylesheet" href={`${base}fonts/GenJyuuGothic-P-Regular/result.css`} media="print" onload="this.setAttribute('media','all')" />
+        <link rel="stylesheet" href={`${base}fonts/GenJyuuGothic-P-Bold/result.css`} media="print" onload="this.setAttribute('media','all')" />
       </>
     ) : (
       <>
-        <link rel="stylesheet" href="/fonts/ChillRoundFRegular/result.css" media="print" onload="this.setAttribute('media','all')" />
-        <link rel="stylesheet" href="/fonts/ChillRoundFBold/result.css" media="print" onload="this.setAttribute('media','all')" />
+        <link rel="stylesheet" href={`${base}fonts/ChillRoundFRegular/result.css`} media="print" onload="this.setAttribute('media','all')" />
+        <link rel="stylesheet" href={`${base}fonts/ChillRoundFBold/result.css`} media="print" onload="this.setAttribute('media','all')" />
       </>
     )}
 

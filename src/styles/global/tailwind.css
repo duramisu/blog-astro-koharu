@@ -5,7 +5,7 @@
 
 @font-face {
   font-family: "Bear Days";
-  src: url("/fonts/bear-days.woff2") format("woff2");
+  src: url("var(--base-url)/fonts/bear-days.woff2") format("woff2");
   font-display: swap;
 }
 
