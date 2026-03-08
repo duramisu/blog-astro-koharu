@@ -175,6 +175,9 @@ type SocialConfig = {
   rss?: SocialPlatform;
 };
 
+// Get base path from config
+const basePath = yamlConfig.site.base || '/';
+
 // Helper function to prepend base path to relative paths
 function withBase(path: string | undefined): string | undefined {
   if (!path) return path;
@@ -215,7 +218,6 @@ export const seoConfig = {
   url: siteConfig.site,
 };
 
-const basePath = yamlConfig.site.base || '/';
 const BUILT_IN_COVERS = Array.from({ length: 21 }, (_, i) => `${basePath}img/cover/${i + 1}.webp`);
 export const defaultCoverList = yamlConfig?.defaultCoverList?.length ? yamlConfig.defaultCoverList : BUILT_IN_COVERS;
 
