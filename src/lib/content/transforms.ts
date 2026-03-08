@@ -20,8 +20,12 @@ const basePath = import.meta.env.BASE_URL;
 function withBase(path: string | undefined): string | undefined {
   if (!path) return path;
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  if (basePath !== '/' && !path.startsWith(basePath)) {
-    return `${basePath}${path.startsWith('/') ? '' : '/'}${path}`;
+  // basePath ends with /, so just remove leading / from path
+  if (basePath !== '/') {
+    const basePathNoSlash = basePath.replace(/\/$/, '');
+    if (!path.startsWith(basePathNoSlash + '/')) {
+      return `${basePathNoSlash}${path}`;
+    }
   }
   return path;
 }

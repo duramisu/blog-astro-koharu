@@ -23,10 +23,13 @@ try {
  * @returns Short key like cover/1.webp
  */
 function imagePathToKey(imagePath: string): string {
-  // Remove base path if present
+  // Remove base path if present (handle both with and without trailing slash)
   let normalizedPath = imagePath;
-  if (basePath !== '/' && imagePath.startsWith(basePath)) {
-    normalizedPath = imagePath.slice(basePath.length);
+  if (basePath !== '/') {
+    const basePathNoSlash = basePath.replace(/\/$/, '');
+    if (imagePath.startsWith(basePathNoSlash + '/')) {
+      normalizedPath = imagePath.slice(basePathNoSlash.length);
+    }
   }
   // Remove /img/ prefix
   return normalizedPath.replace(/^\/img\//, '');

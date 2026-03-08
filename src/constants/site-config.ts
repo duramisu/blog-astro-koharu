@@ -13,16 +13,18 @@ import { DEFAULT_TIMEZONE, isValidTimezone } from '@lib/timezone';
 import yamlConfig from '../../config/site.yaml';
 import { isReservedSlug, RESERVED_ROUTES } from './router';
 
-// Get base path from config (normalize: ensure starts with /, no trailing /)
-const basePath = (yamlConfig.site.base || '/').replace(/^\/?/, '/').replace(/\/$/, '');
+// Get base path from config (normalize: ensure starts with /, ends with /)
+const basePath = (yamlConfig.site.base || '/').replace(/^\/?/, '/').replace(/\/?$/, '/');
 
 // Helper function to prepend base path to relative paths
 function withBase(path: string | undefined): string | undefined {
   if (!path) return path;
   // Skip if already absolute URL
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  // Skip if already has base
-  if (path.startsWith(basePath)) return path;
+  // Skip if already has base (check without trailing slash)
+  const basePathNoSlash = basePath.replace(/\/$/, '');
+  if (path.startsWith(basePathNoSlash + '/') || path === basePathNoSlash) return path;
+  // Remove leading slash from path and append to base
   return `${basePath}${path.replace(/^\//, '')}`;
 }
 
@@ -228,7 +230,7 @@ export const seoConfig = {
   url: siteConfig.site,
 };
 
-const BUILT_IN_COVERS = Array.from({ length: 21 }, (_, i) => `${basePath}/img/cover/${i + 1}.webp`);
+const BUILT_IN_COVERS = Array.from({ length: 21 }, (_, i) => `${basePath}img/cover/${i + 1}.webp`);
 export const defaultCoverList = yamlConfig?.defaultCoverList?.length ? yamlConfig.defaultCoverList : BUILT_IN_COVERS;
 
 // Analytics config types
