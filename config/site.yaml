@@ -165,7 +165,7 @@ social:
     icon: ri:mail-line
     color: "#55acd5"
   rss:
-    url: /rss.xml # 站内 RSS 订阅地址
+    url: /blog-astro-koharu/rss.xml # 站内 RSS 订阅地址
     icon: ri:rss-line
     color: "#ff6600"
   # -------------------------------------------------------------------------

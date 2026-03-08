@@ -21,7 +21,7 @@ export async function GET(context: APIContext) {
     description: siteConfig.subtitle || 'No description',
     site,
     trailingSlash: false,
-    stylesheet: '/rss/feed.xsl', // https://docs.astro.build/en/recipes/rss/#adding-a-stylesheet
+    stylesheet: '/blog-astro-koharu/rss/feed.xsl', // https://docs.astro.build/en/recipes/rss/#adding-a-stylesheet
     items: posts
       .map((post: BlogPost) => {
         // 获取分类数组
