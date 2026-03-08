@@ -18,6 +18,7 @@ export interface SiteBasicConfig {
   showLogo?: boolean;
   author?: string;
   url: string;
+  base?: string;
   startYear?: number;
   defaultOgImage?: string;
   keywords?: string[];

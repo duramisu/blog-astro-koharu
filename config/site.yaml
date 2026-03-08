@@ -369,7 +369,7 @@ navigation:
   #   path: /reading
   - name: 周刊
     nameKey: nav.weekly
-    path: /weekly
+    path: /blog-astro-koharu/weekly
     icon: ri:newspaper-line
   - name: 文章 # 有子菜单时，path 可省略
     nameKey: nav.posts

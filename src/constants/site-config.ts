@@ -175,6 +175,16 @@ type SocialConfig = {
   rss?: SocialPlatform;
 };
 
+// Helper function to prepend base path to relative paths
+function withBase(path: string | undefined): string | undefined {
+  if (!path) return path;
+  // Skip if already absolute URL
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  // Skip if already has base
+  if (path.startsWith(basePath)) return path;
+  return `${basePath}${path.replace(/^\//, '')}`;
+}
+
 // Map YAML config to existing types
 export const siteConfig: SiteConfig = {
   title: yamlConfig.site.title,
@@ -182,12 +192,12 @@ export const siteConfig: SiteConfig = {
   subtitle: yamlConfig.site.subtitle,
   name: yamlConfig.site.name,
   description: yamlConfig.site.description,
-  avatar: yamlConfig.site.avatar,
+  avatar: withBase(yamlConfig.site.avatar),
   showLogo: yamlConfig.site.showLogo,
   author: yamlConfig.site.author,
   site: yamlConfig.site.url,
   startYear: yamlConfig.site.startYear,
-  defaultOgImage: yamlConfig.site.defaultOgImage,
+  defaultOgImage: withBase(yamlConfig.site.defaultOgImage),
   keywords: yamlConfig.site.keywords,
   breadcrumbHome: yamlConfig.site.breadcrumbHome,
   featuredCategories: yamlConfig.featuredCategories,
@@ -205,7 +215,8 @@ export const seoConfig = {
   url: siteConfig.site,
 };
 
-const BUILT_IN_COVERS = Array.from({ length: 21 }, (_, i) => `/img/cover/${i + 1}.webp`);
+const basePath = yamlConfig.site.base || '/';
+const BUILT_IN_COVERS = Array.from({ length: 21 }, (_, i) => `${basePath}img/cover/${i + 1}.webp`);
 export const defaultCoverList = yamlConfig?.defaultCoverList?.length ? yamlConfig.defaultCoverList : BUILT_IN_COVERS;
 
 // Analytics config types
