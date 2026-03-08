@@ -99,41 +99,65 @@ export function getLocaleFromUrl(pathname: string): Locale {
 }
 
 /**
- * Generate a locale-aware path.
+ * Generate a locale-aware path with base prefix.
  *
  * - Default locale: no prefix (e.g., '/post/hello')
  * - Other locales: prefixed (e.g., '/en/post/hello')
+ * - Always includes Astro base path
  *
  * @example
  * ```ts
- * localizedPath('/post/hello', 'zh')  // => '/post/hello'
- * localizedPath('/post/hello', 'en')  // => '/en/post/hello'
- * localizedPath('/', 'en')            // => '/en'
+ * localizedPath('/post/hello', 'zh')  // => '/blog-astro-koharu/post/hello'
+ * localizedPath('/post/hello', 'en')  // => '/blog-astro-koharu/en/post/hello'
+ * localizedPath('/', 'en')            // => '/blog-astro-koharu/en'
  * ```
  */
 export function localizedPath(path: string, locale: Locale = defaultLocale): string {
+  // Get Astro base path (e.g., '/blog-astro-koharu' or '/')
+  const basePath = import.meta.env.BASE_URL;
+  
   // Ensure path starts with /
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-
+  
+  // Build locale-aware path
+  let result: string;
   if (locale === defaultLocale) {
-    return normalizedPath;
+    result = normalizedPath;
+  } else {
+    result = `/${locale}${normalizedPath}`;
   }
-
-  return `/${locale}${normalizedPath}`;
+  
+  // Prepend base path (avoid double slashes)
+  if (basePath !== '/') {
+    result = `${basePath.replace(/\/$/, '')}${result}`;
+  }
+  
+  return result;
 }
 
 /**
  * Strip the locale prefix from a pathname, returning the locale-free path.
+ * Also removes the base path for proper comparison.
  *
  * @example
  * ```ts
- * stripLocaleFromPath('/en/post/hello')  // => '/post/hello'
- * stripLocaleFromPath('/post/hello')     // => '/post/hello'
- * stripLocaleFromPath('/en')             // => '/'
+ * stripLocaleFromPath('/blog-astro-koharu/en/post/hello')  // => '/post/hello'
+ * stripLocaleFromPath('/blog-astro-koharu/post/hello')     // => '/post/hello'
+ * stripLocaleFromPath('/en/post/hello')                    // => '/post/hello'
  * ```
  */
 export function stripLocaleFromPath(pathname: string): string {
-  const segments = pathname.split('/').filter(Boolean);
+  // Get Astro base path
+  const basePath = import.meta.env.BASE_URL;
+  
+  // Remove base path first if present
+  let normalizedPath = pathname;
+  if (basePath !== '/' && pathname.startsWith(basePath)) {
+    normalizedPath = pathname.slice(basePath.length) || '/';
+  }
+  
+  // Then strip locale prefix
+  const segments = normalizedPath.split('/').filter(Boolean);
   const firstSegment = segments[0];
 
   if (firstSegment && firstSegment !== defaultLocale && isLocaleSupported(firstSegment)) {
@@ -141,7 +165,7 @@ export function stripLocaleFromPath(pathname: string): string {
     return rest ? `/${rest}` : '/';
   }
 
-  return pathname;
+  return normalizedPath;
 }
 
 /**

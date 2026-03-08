@@ -13,6 +13,19 @@ import { DEFAULT_TIMEZONE, isValidTimezone } from '@lib/timezone';
 import yamlConfig from '../../config/site.yaml';
 import { isReservedSlug, RESERVED_ROUTES } from './router';
 
+// Get base path from config (normalize: ensure starts with /, no trailing /)
+const basePath = (yamlConfig.site.base || '/').replace(/^\/?/, '/').replace(/\/$/, '');
+
+// Helper function to prepend base path to relative paths
+function withBase(path: string | undefined): string | undefined {
+  if (!path) return path;
+  // Skip if already absolute URL
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  // Skip if already has base
+  if (path.startsWith(basePath)) return path;
+  return `${basePath}${path.replace(/^\//, '')}`;
+}
+
 /**
  * Runtime site configuration
  * Extends SiteBasicConfig with runtime-specific fields
@@ -87,9 +100,13 @@ function normalizeFeaturedSeries(config: unknown): FeaturedSeriesItem[] {
       );
     }
 
-    // Add default slug for legacy configs
+    // Add default slug for legacy configs and process cover path
     const slug = item.slug || yamlConfig.categoryMap?.[item.categoryName] || 'series';
-    validatedItems.push({ ...item, slug });
+    validatedItems.push({ 
+      ...item, 
+      slug,
+      cover: withBase(item.cover) ?? item.cover,
+    });
   }
 
   // Validate each series configuration
@@ -175,18 +192,11 @@ type SocialConfig = {
   rss?: SocialPlatform;
 };
 
-// Get base path from config (ensure trailing slash)
-const basePath = (yamlConfig.site.base || '/').replace(/\/?$/, '/');
-
-// Helper function to prepend base path to relative paths
-function withBase(path: string | undefined): string | undefined {
-  if (!path) return path;
-  // Skip if already absolute URL
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  // Skip if already has base
-  if (path.startsWith(basePath)) return path;
-  return `${basePath}${path.replace(/^\//, '')}`;
-}
+// Process featuredCategories to add base prefix to image paths
+const processedFeaturedCategories = yamlConfig.featuredCategories?.map((cat) => ({
+  ...cat,
+  image: withBase(cat.image) ?? cat.image,
+}));
 
 // Map YAML config to existing types
 export const siteConfig: SiteConfig = {
@@ -203,7 +213,7 @@ export const siteConfig: SiteConfig = {
   defaultOgImage: withBase(yamlConfig.site.defaultOgImage),
   keywords: yamlConfig.site.keywords,
   breadcrumbHome: yamlConfig.site.breadcrumbHome,
-  featuredCategories: yamlConfig.featuredCategories,
+  featuredCategories: processedFeaturedCategories,
   featuredSeries: normalizeFeaturedSeries(yamlConfig.featuredSeries),
 };
 
@@ -218,7 +228,7 @@ export const seoConfig = {
   url: siteConfig.site,
 };
 
-const BUILT_IN_COVERS = Array.from({ length: 21 }, (_, i) => `${basePath}img/cover/${i + 1}.webp`);
+const BUILT_IN_COVERS = Array.from({ length: 21 }, (_, i) => `${basePath}/img/cover/${i + 1}.webp`);
 export const defaultCoverList = yamlConfig?.defaultCoverList?.length ? yamlConfig.defaultCoverList : BUILT_IN_COVERS;
 
 // Analytics config types
