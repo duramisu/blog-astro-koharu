@@ -130,7 +130,7 @@ featuredSeries:
     icon: ri:newspaper-line # 导航图标
     links: # 相关链接（可选）
       github: https://github.com/your-username/your-repo # (可选) GitHub 仓库
-      rss: /rss.xml # (可选) RSS 订阅链接
+      rss: /blog-astro-koharu/rss.xml # (可选) RSS 订阅链接
       # chrome: https://chromewebstore.google.com/detail/your-extension-id # (可选) 浏览器插件
       # docs: https://your-docs-url # (可选) 文档链接
   # 示例：添加第二个系列（取消注释启用）

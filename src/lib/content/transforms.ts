@@ -11,6 +11,21 @@ import type { BlogPost } from '@/types/blog';
 import { getPostLocale, getSlugLocaleInfo } from './locale';
 import { getPostDescriptionWithSummary, getPostLastCategory } from './posts';
 
+// Get Astro base path for static assets
+const basePath = import.meta.env.BASE_URL;
+
+/**
+ * Prepend base path to image path if needed
+ */
+function withBase(path: string | undefined): string | undefined {
+  if (!path) return path;
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  if (basePath !== '/' && !path.startsWith(basePath)) {
+    return `${basePath}${path.startsWith('/') ? '' : '/'}${path}`;
+  }
+  return path;
+}
+
 /**
  * BlogPost 可提取的字段映射
  * - 直接字段：从 post.slug 或 post.data.xxx 直接取
@@ -44,7 +59,7 @@ const fieldExtractors: { [K in keyof PostFieldMap]: (post: BlogPost, locale: str
   link: (p) => p.data?.link,
   title: (p) => p.data.title,
   date: (p) => p.data.date,
-  cover: (p) => p.data?.cover,
+  cover: (p) => withBase(p.data?.cover),
   tags: (p) => p.data?.tags,
   categories: (p) => p.data?.categories,
   draft: (p) => p.data?.draft,
